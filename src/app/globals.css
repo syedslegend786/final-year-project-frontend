@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.react-select-container .react-select__control {
+  @apply h-12 shadow-none rounded-md text-sm hover:border-gray-200  border-gray-200 focus:outline-none focus:ring-0;
+}
