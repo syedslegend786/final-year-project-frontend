@@ -15,11 +15,11 @@ import { useAuth } from "@/context/authContext";
 import { URLS } from "@/utils/URLS";
 import { toast } from "react-toastify";
 import { loadStripe } from "@stripe/stripe-js";
+import { handleApiError } from "@/utils/handleApiError";
+import { useAppSelector } from "@/redux/hooks";
 
 const CarDetails = () => {
-  const searchParams = useSearchParams();
-  const start_date = searchParams.get("start_date");
-  const end_date = searchParams.get("end_date");
+  const carState = useAppSelector((s) => s.car)
   const { user } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -37,18 +37,16 @@ const CarDetails = () => {
   }, [fetchCar]);
   const CreateCheckout = useCallback(async (cid: string) => {
     try {
-      if (!start_date || !end_date) {
-        router.push("/");
-      }
-      const res = await createCheckoutApi(cid, start_date, end_date);
+      const res = await createCheckoutApi(cid, carState.search.start_date, carState.search.end_date);
       const stripe = await loadStripe(
-        process.env.NEXT_PUBLIC_STRIPE_PUBLISH_KEY as string
+        'pk_test_51MUo50EhwvoKb8N0k2Q2Adcuxd7ncoDj7Va1qsWmcxbXjuJ1U6xyqHj5xLRkeuedfNNAi08bUNR4n08W0mNvclxs00j1zLJXRN'
       );
       stripe?.redirectToCheckout({ sessionId: res.data });
     } catch (error: any) {
-      toast(error.response.data.msg);
+      const err = handleApiError(error)
+      toast.error(err)
     }
-  }, [end_date, router, start_date]);
+  }, [carState.search.end_date, carState.search.start_date]);
   return (
     <Main className="h-screen overflow-auto bg-white">
       {!car ? (
@@ -83,7 +81,7 @@ const CarDetails = () => {
             </div>
             <div className="flex items-center gap-x-3">
               <h1 className="text-sm font-bold">Price:</h1>
-              <h1 className="text-4xl font-bold">${car.price}/day</h1>
+              <h1 className="text-4xl font-bold">PKR {Number(car.price)*287}/day</h1>
             </div>
             <div>
               <Button
@@ -93,9 +91,9 @@ const CarDetails = () => {
                     URLS.LOGIN +
                     `?from=${encodeURIComponent(
                       pathname +
-                        encodeURIComponent(
-                          `?start_date=${start_date}&end_date=${end_date}`
-                        )
+                      encodeURIComponent(
+                        `?start_date=${carState.search.start_date}&end_date=${carState.search.end_date}`
+                      )
                     )}`;
                   if (!user) {
                     router.push(authUrl);

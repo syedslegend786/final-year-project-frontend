@@ -1,21 +1,8 @@
 import { AxiosResponse } from "axios";
 import httpCommon from "../httpCommon";
 import { Vehicle } from "@/types";
-
-type getVehiclesApiProps = {
-  start_date: string;
-  end_date: string;
-  model: string;
-  brand: string;
-};
-export const getVehiclesApi = async (
-  queries: getVehiclesApiProps
-): Promise<AxiosResponse<Vehicle[], any>> => {
-  let Queries = "";
-  Object.entries(queries).forEach(([key, value]) => {
-    Queries += `${key}=${value}&&`;
-  });
-  return httpCommon.get(`/cars` + "?" + Queries);
+export const getVehiclesApi = async (body: any) => {
+  return httpCommon.post(`/cars/listings`, body);
 };
 
 export const uploadVehicleApi = async (data: any) => {
@@ -24,10 +11,8 @@ export const uploadVehicleApi = async (data: any) => {
 export const updateVehicleApi = async (data: any, carid: string) => {
   return httpCommon.patch(`/update/car/${carid}`, data);
 };
-export const getCompanyCreatedVehicles = async (): Promise<
-  AxiosResponse<Vehicle[], any>
-> => {
-  return httpCommon.get("/company-vehicles");
+export const getCompanyCreatedVehicles = async (data: any) => {
+  return httpCommon.post("/company-vehicles", data);
 };
 
 export const getSingleCar = async (
@@ -64,3 +49,8 @@ export const updateCarImage = async (data: updateCarImage) => {
   formdata.append("carId", data.carId);
   return httpCommon.post("/update/car/image", formdata);
 };
+
+
+export const deleteCarApi = async (id: string) => {
+  return httpCommon.del(`/delete/car/${id}`)
+}

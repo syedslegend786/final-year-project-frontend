@@ -3,6 +3,8 @@ import "./globals.css";
 import { Poppins } from "next/font/google";
 import AuthContext from "@/context/authContext";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import ReduxProvider from "@/providers/ReduxProvider";
+import InitialDataFetcherProvider from "@/providers/InitialDataFetchProvider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -25,10 +27,14 @@ export default function RootLayout({
       <body>
         <main className={`${poppins.variable} font-poppins  bg-gray-100`}>
           <ReactQueryProvider>
-            <AuthContext>
-              <ToastProvider />
-              {children}
-            </AuthContext>
+            <ReduxProvider>
+              <AuthContext>
+                <ToastProvider />
+                <InitialDataFetcherProvider>
+                  {children}
+                </InitialDataFetcherProvider>
+              </AuthContext>
+            </ReduxProvider>
           </ReactQueryProvider>
         </main>
       </body>

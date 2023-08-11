@@ -7,6 +7,9 @@ import Button from "@/components/Button";
 import Image from "next/image";
 import { uploadVehicleApi } from "@/services/api/vehicle";
 import { toast } from "react-toastify";
+import { handleApiError } from "@/utils/handleApiError";
+import Select, { OptionType } from "@/components/Select";
+import { TCitiesData, citiesData } from "@/data/cities";
 // brand
 // model
 // color
@@ -60,9 +63,10 @@ const AddCarForm = () => {
       });
       try {
         await uploadVehicleApi(formData);
-        toast("Vehicle Created Successfully.");
+        toast.success("Vehicle Created Successfully.");
       } catch (error: any) {
-        toast(error.response.data.msg);
+        const err = handleApiError(error)
+        toast.error(err);
       }
     },
   });
@@ -168,6 +172,17 @@ const AddCarForm = () => {
             error={errors.price && touched.price ? errors.price : ""}
             className="w-full"
           />
+          {/* <Select
+            options={citiesData.map((v) => ({ ...v, label: v.name, value: v.name }))}
+            label="City"
+            name="city"
+            type="number"
+            onChange={(data: TCitiesData & OptionType) => {
+              // setValues((prev)=>({...prev}))
+            }}
+            onBlur={handleBlur}
+            error={errors.price && touched.price ? errors.price : ""}
+          /> */}
           <Button type="submit" className="col-span-2">
             Submit
           </Button>

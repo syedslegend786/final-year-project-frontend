@@ -19,6 +19,8 @@ const Success = () => {
         // toast(res.data.msg);
       } catch (error: any) {
         // toast(error.response.data.msg);
+      }finally{
+        
       }
     }
   }, [cid, startDate, endDate]);

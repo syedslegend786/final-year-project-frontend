@@ -6,7 +6,7 @@ import React from "react";
 
 const Page = () => {
   return (
-    <DashBoard>
+    <DashBoard className="min-h-screen overflow-auto">
       <CarListings />
     </DashBoard>
   );

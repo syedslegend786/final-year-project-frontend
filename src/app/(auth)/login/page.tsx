@@ -13,6 +13,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import TopHeader from "@/layout/Home/TopHeader";
+import Input from "@/components/Input";
+import { URLS } from "@/utils/URLS";
+const validationSchema = Yup.object({
+  mobile: Yup.string().required("Username is required."),
+  password: Yup.string().required("Password is required."),
+})
+type Values = Yup.InferType<typeof validationSchema>
 const Login = () => {
   const searchParams = useSearchParams();
   const from = searchParams.get("from");
@@ -20,19 +27,24 @@ const Login = () => {
   const { loading, user } = useAuth();
   const { values, handleChange, handleBlur, touched, errors, handleSubmit } =
     useFormik({
-      initialValues: { username: "", password: "" },
-      validationSchema: Yup.object({
-        username: Yup.string().required("Username is required."),
-        password: Yup.string().required("Password is required."),
-      }),
-      onSubmit: async (submitValues) => {
+      initialValues: { mobile: "", password: "" } as Values,
+      validationSchema: validationSchema,
+      onSubmit: async ({ mobile, password }) => {
         try {
-          const res = await loginApi(submitValues);
-          console.log(res.data);
-          localStorage.setItem("token", res.data);
-          window.open("/", "_self");
+          const { data } = await loginApi({
+            mobile_number: mobile,
+            password
+          });
+          if (data.token) {
+            toast.success("Verification token sent to you email")
+            window.location.href = `${URLS.VERIFY_OTP}?mobileNumber=${mobile}`
+          } else {
+            console.log(data);
+            localStorage.setItem("token", data);
+            window.open("/", "_self");
+          }
         } catch (error: any) {
-          toast("Incorrect credentials.");
+          toast.error("Incorrect credentials.");
         }
       },
     });
@@ -54,27 +66,21 @@ const Login = () => {
               </small>
               <form className="mt-4" onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label className="mb-2 block text-xs font-semibold">
-                    Username
-                  </label>
-                  <input
-                    value={values.username}
-                    name="username"
+                  <Input
+                    label="Mobile number"
+                    value={values.mobile}
+                    name="mobile"
                     onChange={handleChange}
                     onBlur={handleBlur}
                     placeholder="Enter your username"
+                    error={errors.mobile && touched.mobile ? errors.mobile : ""}
                     className="block w-full rounded-md border border-gray-300 focus:border-purple-700 focus:outline-none focus:ring-1 focus:ring-purple-700 py-1 px-1.5 text-gray-500"
                   />
-                  {errors.username && touched.username ? (
-                    <ErrorBox text={errors.username} className="my-1" />
-                  ) : null}
                 </div>
 
                 <div className="mb-3">
-                  <label className="mb-2 block text-xs font-semibold">
-                    Password
-                  </label>
-                  <input
+                  <Input
+                    label="Password"
                     value={values.password}
                     name="password"
                     onChange={handleChange}
@@ -88,11 +94,11 @@ const Login = () => {
                   ) : null}
                 </div>
 
-                {/* <div className="mb-3 flex flex-wrap content-center">
-                  <a href="#" className="text-xs font-semibold text-purple-700">
+                <div className="mb-3 flex flex-wrap content-center">
+                  <Link href={URLS.FORGET_PASSWORD} className="text-xs font-semibold text-purple-700">
                     Forgot password?
-                  </a>
-                </div> */}
+                  </Link>
+                </div>
                 <div className="mb-3">
                   <Button type="submit" className="w-full mb-1">
                     Sign in

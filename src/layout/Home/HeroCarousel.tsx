@@ -21,7 +21,7 @@ const settings = {
 } as Settings;
 const HeroCarousel = () => {
   return (
-    <div className="h-screen w-full overflow-hidden relative">
+    <div className="min-h-screen w-full overflow-hidden relative">
       <div className="inset-0 absolute z-10 bg-[rgba(0,0,0,0.4)] py-5 ">
         <div>
           <h1 className="capitalize text-7xl font-bold text-center text-white">
@@ -32,7 +32,7 @@ const HeroCarousel = () => {
             vehicles
           </p>
         </div>
-        <CarForm className="-mt-10" />
+        <CarForm className="mt-5" />
       </div>
       <Slider {...settings} className="">
         {[1, 2, 3, 4].map((_, key) => (

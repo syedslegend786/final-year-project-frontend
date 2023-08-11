@@ -20,9 +20,17 @@ const navData = [
     url: URLS.ORDERS,
     badge: true,
   },
+  {
+    title: "Company Profile",
+    url: URLS.COMPANY_PROFILE,
+  },
+  // {
+  //   title: "Feedbacks",
+  //   url: URLS.FEED_BACK
+  // }
 ] as { title: string; url: string; badge?: boolean }[];
 const DashBoardSideBar = () => {
-  const {orders}=useAuth()
+  const { orders } = useAuth()
   const pathname = usePathname();
   const router = useRouter();
   return (

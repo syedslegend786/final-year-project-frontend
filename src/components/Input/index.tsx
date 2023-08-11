@@ -13,7 +13,7 @@ const Input: React.FC<InputProps> = ({ label, error, ...rest }) => {
       <Label>{label}</Label>
       <input
         {...rest}
-        className="h-10 w-full rounded-md border border-gray-200 p-3 text-sm  focus:outline-none focus:ring-0 disabled:pointer-events-none"
+        className="h-12 w-full rounded-md border border-gray-200 p-3 text-sm  focus:outline-none focus:ring-0 disabled:pointer-events-none disabled:bg-white disabled:bg-opacity-50"
         autoComplete="off"
       />
       {error && <ErrorBox text={error} />}
